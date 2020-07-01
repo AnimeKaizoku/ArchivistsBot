@@ -4,9 +4,8 @@ from telegram.ext import Updater, InlineQueryHandler
 from telegram import InlineQueryResultArticle, InputTextMessageContent
 
 
-
-token = '1234992381:AAFShEeG71aUOrXhXk5ozJChvqtIhmZqfnU'
-#bot = telegram.Bot(token)
+# Your bot token here.
+token = ''
 updater = Updater(token, use_context=True)
 dispatcher = updater.dispatcher
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -30,10 +29,14 @@ def searchEverything(quer):
             temp2 = temp2.replace('F:\\', '')
             temp2 = temp2.replace('Shared drives\\', '')
             temp2 = temp2.split('\\')
-            temp3 = f'Shared Drive: {temp2[0]} \nPath: '
+            #print(temp2)
+            temp3 = f'<b>Drive:</b> '
             for j in range(1, len(temp2)):
-                temp3 = temp3 + f'/{temp2[j]}'
-            result[temp1] = temp3
+                if j == 1:
+                    temp3 = temp3 + f'<pre>{temp2[j]}</pre>\n<b>Path:</b> <pre>'
+                else:
+                    temp3 = temp3 + f'{temp2[j]} - '
+            result[temp1] = temp3[:len(temp3) - 3] + '</pre>'
             i = i + 4
         return result
 
@@ -55,9 +58,9 @@ def archivistsSearch(update, context):
         temp = 1
         for i in list(tempres.keys()):
             results.append(InlineQueryResultArticle(
-                id=f'obj{temp}',
+                id=f'{query.upper()}{temp}',
                 title=i,
-                input_message_content=InputTextMessageContent(tempres[i])
+                input_message_content=InputTextMessageContent(tempres[i], parse_mode="html")
             ))
             temp = temp + 1
         print(results)
